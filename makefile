@@ -22,7 +22,7 @@ test:
 	poetry run pytest
 
 docs:
-	poetry run lazydocs --overview-file="README.md" easy_gui_prompt
+	poetry run lazydocs --overview-file="README.md" {{project_name}}
 
 all: install lint test docs
 

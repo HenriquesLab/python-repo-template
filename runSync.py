@@ -24,6 +24,9 @@ def main():
         if not sync_file.exists():
             continue
 
+        pyproject_file = i / "pyproject.toml"
+        pyproject_config = toml.load(pyproject_file)
+
         template_config = toml.load(sync_file)
         exclude = template_config.get("exclude", [])
 
@@ -36,6 +39,9 @@ def main():
 
             src_text = src.read_text()
             dest_text = dest.read_text()
+
+            if include_file == "makefile":
+                src_text = src_text.replace("{{project_name}}", pyproject_config["tool"]["poetry"]["name"])
 
             if not dest.exists() or src_text != dest_text:
                 dest.write_text(src_text)
