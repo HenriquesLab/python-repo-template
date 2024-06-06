@@ -13,7 +13,7 @@ include_files = [
 
 def main():
     base_path = Path(__file__).parent.parent
-    src_path = Path(__file__).parent
+    src_path = Path(__file__).parent / "templates"
 
     # list the directories in the base path
     for i in base_path.iterdir():
@@ -38,7 +38,9 @@ def main():
             dest = i / include_file
 
             src_text = src.read_text()
-            dest_text = dest.read_text()
+            dest_text = ""
+            if dest.exists():
+                dest_text = dest.read_text()
 
             if include_file == "makefile":
                 src_text = src_text.replace("{{project_name}}", pyproject_config["tool"]["poetry"]["name"])
