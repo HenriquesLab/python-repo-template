@@ -1,4 +1,4 @@
-.PHONY: help install lint format pytest mypy docs {{scripts_phony}}
+.PHONY: help install lint format pytest mypy mypy-types docs {{scripts_phony}}
 
 help:
 	@echo "Available commands:"
@@ -7,6 +7,7 @@ help:
 	@echo "  format                     Run formatters using pre-commit"
 	@echo "  pytest                     Run tests using pytest"
 	@echo "  mypy                       Run type-checking using mypy"
+	@echo "  mypy-types                 Install missing types using mypy"
 	@echo "  docs                       Generate documentation using lazydocs"
 	{{scripts_echo}}
 
@@ -25,8 +26,12 @@ pytest:
 mypy:
 	poetry run mypy --ignore-missing-imports {{project_name}}
 
+mypy-types:
+	poetry run mypy --install-types
+
 docs:
-	poetry run lazydocs --overview-file="README.md" {{project_name}}
+	rm -rf docs
+	poetry run lazydocs --overview-file="README.md" ./
 
 {{scripts}}
 
