@@ -6,7 +6,7 @@ authors = ["Bruno Saraiva <bruno.msaraiva2@gmail.com>", "Ricardo Henriques <rica
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 pyyaml = "^6.0.1"
 toml = "^0.10.2"
 gptrepo = "^1.0.3"
