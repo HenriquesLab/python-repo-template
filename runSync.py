@@ -27,6 +27,9 @@ def main():
         pyproject_file = i / "pyproject.toml"
         pyproject_config = toml.load(pyproject_file)
 
+        # fix the pyproject file
+        fix_pyproject(pyproject_file, pyproject_config)
+
         template_config = toml.load(sync_file)
         exclude = template_config.get("exclude", [])
 
@@ -76,6 +79,49 @@ def generate_makefile(pyproject_config, src_text) -> str:
 
     return src_text
 
+def fix_pyproject(pyproject_file, pyproject_config):
+    if "group" not in pyproject_config["tool"]["poetry"]:
+        pyproject_config["tool"]["poetry"]["group"] = {}
+    if "dev" not in pyproject_config["tool"]["poetry"]["group"]:
+        pyproject_config["tool"]["poetry"]["group"]["dev"] = {}
+        pyproject_config["tool"]["poetry"]["group"]["dev"]["dependencies"] = {}
+    if "test" not in pyproject_config["tool"]["poetry"]["group"]:
+        pyproject_config["tool"]["poetry"]["group"]["test"] = {}
+        pyproject_config["tool"]["poetry"]["group"]["test"]["dependencies"] = {}
+
+    dev_dependencies = pyproject_config["tool"]["poetry"]["group"]["dev"]["dependencies"]
+    if "pre-commit" not in dev_dependencies:
+        dev_dependencies["pre-commit"] = "^3.7.0"
+    if "ruff" not in dev_dependencies:
+        dev_dependencies["ruff"] = "^0.4.3"
+    if "lazydocs" not in dev_dependencies:
+        dev_dependencies["lazydocs"] = "^0.4.8"
+    if "gptrepo" not in dev_dependencies:
+        dev_dependencies["gptrepo"] = "^1.0.3"
+
+    test_dependencies = pyproject_config["tool"]["poetry"]["group"]["test"]["dependencies"]
+    if "pytest" not in test_dependencies:
+        test_dependencies["pytest"] = "^8.2.0"
+    if "pytest-cov" not in test_dependencies:
+        test_dependencies["pytest-cov"] = "^3.0.0"
+    if "pytest-xdist" not in test_dependencies:
+        test_dependencies["pytest-xdist"] = "^3.6.1"
+    if "nbmake" not in test_dependencies:
+        test_dependencies["nbmake"] = "^1.5.3"
+    if "mypy" not in test_dependencies:
+        test_dependencies["mypy"] = "^1.10.0"
+
+    project_name = pyproject_config["tool"]["poetry"]["name"]
+    # tool.pytest.ini_options
+    if "pytest" not in pyproject_config["tool"]:
+        pyproject_config["tool"]["pytest"] = {}
+    if "ini_options" not in pyproject_config["tool"]["pytest"]:
+        pyproject_config["tool"]["pytest"]["ini_options"] = {}
+        # testpaths = [ "tests",]
+        pyproject_config["tool"]["pytest"]["ini_options"]["testpaths"] = ["tests"]
+        pyproject_config["tool"]["pytest"]["ini_options"]["addopts"] = [f"--cov={project_name}"]
+    
+    toml.dump(pyproject_config, open("pyproject.toml", "w"))
 
 if __name__ == "__main__":
     main()

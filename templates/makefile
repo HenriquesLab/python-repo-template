@@ -24,7 +24,7 @@ pytest:
 	poetry run pytest
 
 mypy:
-	poetry run mypy --ignore-missing-imports {{project_name}}
+	poetry run mypy --ignore-missing-imports src
 
 mypy-types:
 	poetry run mypy --install-types
