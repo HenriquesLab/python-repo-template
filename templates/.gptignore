@@ -86,6 +86,9 @@ $RECYCLE.BIN/
 *.bak
 *.swp
 
+# Ignore mypy cache
+.mypy_cache/*
+
 # Ignore output files
 output/
 *.out
@@ -116,6 +119,7 @@ htmlcov/
 # Ignore documentation build files
 docs/_build/*
 doc/_build/*
+docs/*
 
 # Ignore data directory
 data/*
